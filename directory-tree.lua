@@ -2,10 +2,6 @@ tex = require "tex";
 
 local directoryTree = { }
 
-directoryTree.drawTree = function (dir)
-  directoryTree.printNode(dir);
-end
-
 directoryTree.printNode = function (path,level)
   if not level then level = 0; end
   local attr, msg = lfs.attributes(path);

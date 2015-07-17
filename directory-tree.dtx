@@ -28,6 +28,11 @@
 %<*driver>
 \documentclass{ltxdoc}
 \usepackage{directory-tree}[2015/07/17]
+\usepackage{charter}
+\usepackage{listings}
+\usepackage[font=it,labelfont=bf]{caption}
+\usepackage[colorlinks]{hyperref}
+\lstset{basicstyle=\ttfamily}
 \EnableCrossrefs         
 \CodelineIndex
 \RecordChanges
@@ -106,6 +111,10 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsection{The Lua Filesystem Magic}
+% For the Lua code driving this package, see listing~\ref{directory-tree.lua} on page~\pageref{directory-tree.lua}.
+% \lstinputlisting[float,label=directory-tree.lua,caption=directory-tree.lua]{directory-tree.lua}
 %
 % \Finale
 \endinput
