@@ -60,7 +60,7 @@
 %
 % \changes{v0.1}{2015/07/17}{Initial version}
 %
-% \GetFileInfo{directory-tree.dtx}
+% \GetFileInfo{directory-tree.sty}
 %
 % \DoNotIndex{\newcommand,\newenvironment}
 % 
@@ -78,8 +78,12 @@
 %
 % \section{Usage}
 %
-% Put text here.
+% \subsection{Example}
 %
+% \begin{figure}[h]
+% \directoryTree{.}
+% \caption{The directory in which this package was compiled}
+% \end{figure}
 % \StopEventually{}
 %
 % \section{Implementation}
@@ -90,6 +94,17 @@
 \directlua{directoryTree = dofile('directory-tree.lua')}
 %    \end{macrocode}
 % \begin{macro}{\directoryTree}
+%    \begin{macrocode}
+\newcommand{\directoryTree}[1]{
+	\begin{tikzpicture}[%
+		every node/.style={draw=black,thick,anchor=west},
+		grow via three points={one child at (0.5,-0.7) and
+		two children at (0.5,-0.7) and (0.5,-1.4)},
+		edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+		\directlua{directoryTree.printNode('#1');}
+	\end{tikzpicture}
+}
+%    \end{macrocode}
 % \end{macro}
 %
 % \Finale
