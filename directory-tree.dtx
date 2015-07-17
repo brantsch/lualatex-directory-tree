@@ -32,7 +32,7 @@
 \usepackage{listings}
 \usepackage[font=it,labelfont=bf]{caption}
 \usepackage[colorlinks]{hyperref}
-\lstset{basicstyle=\ttfamily}
+\lstset{basicstyle=\ttfamily,breaklines,frame=l,numbers=left,float=t,stepnumber=5}
 \EnableCrossrefs         
 \CodelineIndex
 \RecordChanges
@@ -83,13 +83,36 @@
 %
 % \section{Usage}
 %
+% \DescribeMacro{\directoryTree\marg{path}}
+% This macro draws a directory tree with the \meta{path} given as its argument at the root.
+% It creates a TikZ picture to accomplish this.
+%
 % \subsection{Example}
+% |\directoryTree{.}| draws a directory tree with the current working directory at the root.
+% The output of this incantation can be seen in figure~\ref{fig:cwdtree} on page~\pageref{fig:cwdtree}.
 %
 % \begin{figure}[h]
 % \directoryTree{.}
 % \caption{The directory in which this package was compiled}
+% \label{fig:cwdtree}
 % \end{figure}
 % \StopEventually{}
+%
+% \subsection{Customizing the output}
+% This package defines three TikZ styles:
+% \begin{itemize}
+%	\item \texttt{fsnode} for generic file system nodes
+%	\item \texttt{directory} for directories
+%	\item \texttt{file} for files
+% \end{itemize}
+% They can of course be changed to give the file system nodes a custom look and feel.
+%
+% To enable custom node text and dynamic shape selection,
+% the \lstinline/directoryTree/ table has two overwritable functions,
+% \lstinline/label(attr, path)/ and \lstinline/style(attr, path)/.
+% The \lstinline/attr/ argument is an attribute table from the Lua file system library,
+% and \lstinline/path/ is the path of the file system node.
+% See listing~\ref{directory-tree.lua} on page~\pageref{directory-tree.lua} for the default implementation.
 %
 % \section{Implementation}
 %
@@ -97,12 +120,14 @@
 \RequirePackage{tikz}
 \usetikzlibrary{trees}
 \directlua{directoryTree = dofile('directory-tree.lua')}
+\tikzstyle{fsnode}=[draw=black,thick,anchor=west]
+\tikzstyle{directory}=[fsnode]
+\tikzstyle{file}=[fsnode]
 %    \end{macrocode}
 % \begin{macro}{\directoryTree}
 %    \begin{macrocode}
 \newcommand{\directoryTree}[1]{
 	\begin{tikzpicture}[%
-		every node/.style={draw=black,thick,anchor=west},
 		grow via three points={one child at (0.5,-0.7) and
 		two children at (0.5,-0.7) and (0.5,-1.4)},
 		edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
@@ -114,7 +139,8 @@
 %
 % \subsection{The Lua Filesystem Magic}
 % For the Lua code driving this package, see listing~\ref{directory-tree.lua} on page~\pageref{directory-tree.lua}.
-% \lstinputlisting[float,label=directory-tree.lua,caption=directory-tree.lua]{directory-tree.lua}
+% \lstinputlisting[label=directory-tree.lua,caption=directory-tree.lua]{directory-tree.lua}
 %
+% \clearpage
 % \Finale
 \endinput
