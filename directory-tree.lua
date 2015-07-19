@@ -1,15 +1,19 @@
 tex = require "tex";
 
+function _print(...)
+  tex.print(...);
+  --print(...);
+end
+
 local directoryTree = { }
 
 directoryTree.label = function (attr, path)
   local label = "\\textit{WARNING: NO LABEL}";
+  label = path:gsub(".*/","");
   if attr.mode == "directory" then
-    label = path .. '/';
-  else
-    label = path;
+    label = label .. '/';
   end
-  label = label:gsub("_","\_");
+  label = label:gsub("_","\\_");
   return label;
 end
 
@@ -24,31 +28,36 @@ directoryTree.style = function (attr, path)
 end
 
 directoryTree.printNode = function (path,level)
+  local node_cnt = 0;
   if not level then level = 0; end
   local attr, msg = lfs.attributes(path);
   if (not attr) and msg then
-    print(msg);
+    tex.error(msg);
   else
     local label = directoryTree.label(attr, path);
     local style = directoryTree.style(attr, path);
     if level == 0 then
-      tex.print("\\node[" .. style .. "] {" .. label .. "}");
+      _print("\\node[" .. style .. "] {" .. label .. "}");
     else
-      tex.print("child{ node[" .. style .. "] {" .. label .. "}");
+      _print("child{ node[" .. style .. "] {" .. label .. "}");
     end
     if attr.mode == "directory" then
       for entry in lfs.dir(path) do
         if entry ~= "." and entry ~= ".." then
-          directoryTree.printNode(entry, level+1);
+          node_cnt = node_cnt + directoryTree.printNode(path .. '/' .. entry, level+1);
         end
       end
     end
     if level == 0 then
-      tex.print(";");
+      _print(";");
     else
-      tex.print("}");
+      _print("}");
+      for _=1,node_cnt do
+        _print("child[missing] {}");
+      end
     end
   end
+  return node_cnt+1;
 end
 
 return directoryTree;
