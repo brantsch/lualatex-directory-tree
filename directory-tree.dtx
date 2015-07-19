@@ -88,6 +88,10 @@
 % This macro draws a directory tree with the \meta{path} given as its argument at the root.
 % It creates a TikZ picture to accomplish this.
 %
+% \DescribeMacro{\setdtexclude\marg{regex}}
+% Using this macro, you can set a Lua \meta{regex} for file exclusion.
+% Paths matching \meta{regex} will not be shown in the directory tree.
+%
 % \subsection{Example}
 % |\directoryTree{.}| draws a directory tree with the current working directory at the root.
 % The output of this incantation can be seen in figure~\ref{fig:cwdtree} on page~\pageref{fig:cwdtree}.
@@ -146,6 +150,13 @@
 		edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
 		\directlua{directoryTree.printNode('#1');}
 	\end{tikzpicture}
+}
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\setdtexclude}
+%    \begin{macrocode}
+\newcommand{\setdtexclude}[1]{
+	\directlua{directoryTree.exclude = #1;}
 }
 %    \end{macrocode}
 % \end{macro}

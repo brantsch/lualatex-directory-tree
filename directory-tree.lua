@@ -5,7 +5,9 @@ function _print(...)
   --print(...);
 end
 
-local directoryTree = { }
+local directoryTree = {
+  exclude = "^%.%l";
+}
 
 directoryTree.label = function (attr, path)
   local label = "\\textit{WARNING: NO LABEL}";
@@ -36,6 +38,9 @@ directoryTree.printNode = function (path,level)
   else
     local label = directoryTree.label(attr, path);
     local style = directoryTree.style(attr, path);
+    if label:find(directoryTree.exclude) then
+      return node_cnt;
+    end
     if level == 0 then
       _print("\\node[" .. style .. "] {" .. label .. "}");
     else
