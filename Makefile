@@ -11,3 +11,8 @@ all: ${PKG}.sty ${PKG}.pdf
 	makeindex -s gglo.ist -o $*.gls $*.glo
 	makeindex -s gind.ist -o $*.ind $*.idx
 	${LATEX} $<
+
+.PHONY: clean
+
+clean:
+	-rm -f *.{aux,glo,gls,idx,ilg,ind,log,out}
