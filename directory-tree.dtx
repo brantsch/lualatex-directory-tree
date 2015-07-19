@@ -116,14 +116,26 @@
 % See listing~\ref{directory-tree.lua} on page~\pageref{directory-tree.lua} for the default implementation.
 %
 % \section{Implementation}
-%
+% First, we load TikZ and its library for trees, and define our node styles.
 %    \begin{macrocode}
 \RequirePackage{tikz}
 \usetikzlibrary{trees}
-\directlua{directoryTree = dofile('directory-tree.lua')}
 \tikzstyle{fsnode}=[draw=black,thick,anchor=west]
 \tikzstyle{directory}=[fsnode]
 \tikzstyle{file}=[fsnode]
+%    \end{macrocode}
+% We now check if we have Lua\TeX{} before loading the Lua code powering the package.
+%    \begin{macrocode}
+\RequirePackage{ifluatex}
+\ifluatex\else
+	\PackageError{directory-tree}{%
+		Must be run with LuaTeX/LuaLaTeX!
+	}{%
+		This package only works with LuaTeX/LuaLaTeX.\MessageBreak
+		Thus, you must compile your document with one of the aforementioned programs.
+	}
+\fi
+\directlua{directoryTree = dofile('directory-tree.lua')}
 %    \end{macrocode}
 % \begin{macro}{\directoryTree}
 %    \begin{macrocode}
