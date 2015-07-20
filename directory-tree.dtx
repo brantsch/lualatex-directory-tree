@@ -97,10 +97,13 @@
 % The output of this incantation can be seen in figure~\ref{fig:cwdtree} on page~\pageref{fig:cwdtree}.
 %
 % \begin{figure}[h]
-% \directoryTree{.}
+% \directoryTree[example]{.}
 % \caption{The directory in which this package was compiled}
 % \label{fig:cwdtree}
 % \end{figure}
+%
+% \dtforfiles{example}{dtfile}{\dtfile}
+%
 % \StopEventually{}
 %
 % \subsection{Customizing the output}
@@ -143,14 +146,23 @@
 %    \end{macrocode}
 % \begin{macro}{\directoryTree}
 %    \begin{macrocode}
-\newcommand{\directoryTree}[1]{
+\newcommand{\directoryTree}[2][]{
 	\begin{tikzpicture}[%
 		grow via three points={one child at (0.5,-0.7) and
 		two children at (0.5,-0.7) and (0.5,-1.4)},
 		edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
-		\directlua{directoryTree.printNode('#1');}
+		\directlua{directoryTree.createTree('#2','#1');}
 	\end{tikzpicture}
 }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\dtforfiles}
+%    \begin{macrocode}
+\makeatletter
+\newcommand{\dtforfiles}[3]{
+	\expandafter\expandafter\expandafter\expandafter\expandafter\@for\csname #2\endcsname:=\csname dt@listoffiles@#1\endcsname\do{#3}
+}
+\makeatother
 %    \end{macrocode}
 % \end{macro}
 % \begin{macro}{\setdtexclude}

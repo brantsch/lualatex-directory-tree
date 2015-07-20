@@ -2,7 +2,7 @@ tex = require "tex";
 
 function _print(...)
   tex.print(...);
-  --print(...);
+  print(...);
 end
 
 local directoryTree = {
@@ -29,9 +29,10 @@ directoryTree.style = function (attr, path)
   return style;
 end
 
-directoryTree.printNode = function (path,level)
+directoryTree.printNode = function (path, level, listoffiles)
   local node_cnt = 0;
   if not level then level = 0; end
+  if not listoffiles then listoffiles = {} end
   local attr, msg = lfs.attributes(path);
   if (not attr) and msg then
     tex.error(msg);
@@ -39,7 +40,7 @@ directoryTree.printNode = function (path,level)
     local label = directoryTree.label(attr, path);
     local style = directoryTree.style(attr, path);
     if label:find(directoryTree.exclude) then
-      return node_cnt;
+      return node_cnt, listoffiles;
     end
     if level == 0 then
       _print("\\node[" .. style .. "] {" .. label .. "}");
@@ -49,9 +50,12 @@ directoryTree.printNode = function (path,level)
     if attr.mode == "directory" then
       for entry in lfs.dir(path) do
         if entry ~= "." and entry ~= ".." then
-          node_cnt = node_cnt + directoryTree.printNode(path .. '/' .. entry, level+1);
+          local n_cnt, listoffiles = directoryTree.printNode(path .. '/' .. entry, level+1, listoffiles);
+          node_cnt = node_cnt + n_cnt;
         end
       end
+    else
+      table.insert(listoffiles, path);
     end
     if level == 0 then
       _print(";");
@@ -62,7 +66,15 @@ directoryTree.printNode = function (path,level)
       end
     end
   end
-  return node_cnt+1;
+  return node_cnt+1, listoffiles;
+end
+
+directoryTree.createTree = function(path, name)
+  local _, listoffiles = directoryTree.printNode(path);
+  local files = table.concat(listoffiles, ", ");
+  if name then
+    _print('\\makeatletter\\gdef\\dt@listoffiles@'..name..'{'..files..'}\\makeatother');
+  end
 end
 
 return directoryTree;
