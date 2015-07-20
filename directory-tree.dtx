@@ -84,25 +84,47 @@
 %
 % \section{Usage}
 %
-% \DescribeMacro{\directoryTree\marg{path}}
-% This macro draws a directory tree with the \meta{path} given as its argument at the root.
+% \subsection{Drawing the tree}
+% \DescribeMacro{\directoryTree\oarg{n}\marg{p}}
+% This macro draws a directory tree with the path \meta{p} given as its argument at the root.
 % It creates a TikZ picture to accomplish this.
 %
+% The optional \meta{n} argument is used to define a name for saving (and later retrieval) of the list of \emph{files}
+% shown in the directory tree. If \meta{n} is not given, the list of files will not be saved.
+%
+% \subsection{Iterating over the shown files}
+% \DescribeMacro{\dtforfiles\marg{n}\marg{i}\marg{c}}
+% |\dtforfiles| iterates over the list of files saved by |\directoryTree|.
+% In the process, it successively defines \meta{i} to each file name from the saved list,
+% and executes the code \meta{c}. In \meta{c}, \meta{i} is available as |\i|.
+%
+% \subsection{Excluding files and directories from the tree}
 % \DescribeMacro{\setdtexclude\marg{regex}}
 % Using this macro, you can set a Lua \meta{regex} for file exclusion.
 % Paths matching \meta{regex} will not be shown in the directory tree.
+% The default exclusion regex just excludes files and folders whose names start with a dot,
+% and which are thus hidden on Unix systems.
 %
 % \subsection{Example}
-% |\directoryTree{.}| draws a directory tree with the current working directory at the root.
+% |\directoryTree[example]{.}| draws a directory tree with the current working directory at the root
+% and saves the list of files for the name \texttt{example}.
 % The output of this incantation can be seen in figure~\ref{fig:cwdtree} on page~\pageref{fig:cwdtree}.
 %
 % \begin{figure}[h]
+% \center
 % \directoryTree[example]{.}
 % \caption{The directory in which this package was compiled}
 % \label{fig:cwdtree}
 % \end{figure}
 %
-% \dtforfiles{example}{dtfile}{\dtfile}
+% \noindent|\dtforfiles{example}{thefile}{(\thefile)}| expands to the following:\\
+% {\itshape
+% \dtforfiles{example}{thefile}{(\thefile)}
+% }\\
+% It retrieves the list of files saved with the name \texttt{example} from the tree in figure~\ref{fig:cwdtree},
+% defines |\thefile| for each filename and then calls the code given as the last argument,
+% which in this example just expands to |(\thefile)|.
+%
 %
 % \StopEventually{}
 %
@@ -160,7 +182,8 @@
 %    \begin{macrocode}
 \makeatletter
 \newcommand{\dtforfiles}[3]{
-	\expandafter\expandafter\expandafter\expandafter\expandafter\@for\csname #2\endcsname:=\csname dt@listoffiles@#1\endcsname\do{#3}
+	\edef\dt@list{\csname dt@listoffiles@#1\endcsname}
+	\expandafter\expandafter\expandafter\@for\csname #2\endcsname:=\dt@list\do{#3}
 }
 \makeatother
 %    \end{macrocode}

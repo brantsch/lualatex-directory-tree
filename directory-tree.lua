@@ -2,7 +2,7 @@ tex = require "tex";
 
 function _print(...)
   tex.print(...);
-  print(...);
+  --print(...);
 end
 
 local directoryTree = {
