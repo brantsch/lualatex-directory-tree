@@ -2,20 +2,21 @@ tex = require "tex";
 
 function _print(...)
   tex.print(...);
-  --print(...);
+  print(...);
 end
 
 local directoryTree = {
   exclude = "^%.%l";
 }
 
-directoryTree.label = function (attr, path)
+directoryTree.label = function (attr, name)
   local label = "\\textit{WARNING: NO LABEL}";
-  label = path:gsub(".*/","");
+  label = name:gsub("_","\\_");
   if attr.mode == "directory" then
-    label = label .. '/';
+    label = "\\dtDirLabel{" .. label .. '/}';
+  else
+    label = "\\dtFileLabel{" .. label .. '}';
   end
-  label = label:gsub("_","\\_");
   return label;
 end
 
@@ -37,11 +38,12 @@ directoryTree.printNode = function (path, level, listoffiles)
   if (not attr) and msg then
     tex.error(msg);
   else
-    local label = directoryTree.label(attr, path);
-    local style = directoryTree.style(attr, path);
-    if label:find(directoryTree.exclude) then
+    local name = path:gsub(".*/","");
+    if name:find(directoryTree.exclude) then
       return node_cnt, listoffiles;
     end
+    local label = directoryTree.label(attr, name);
+    local style = directoryTree.style(attr, path);
     if level == 0 then
       _print("\\node[" .. style .. "] {" .. label .. "}");
     else

@@ -33,7 +33,8 @@
 \usepackage{listings}
 \usepackage[font=it,labelfont=bf]{caption}
 \usepackage[colorlinks]{hyperref}
-\lstset{basicstyle=\ttfamily,breaklines,frame=l,numbers=left,float=t,stepnumber=5}
+\lstset{numberstyle=\footnotesize,basicstyle=\small\ttfamily,language=[5.2]Lua,breaklines,frame=l,numbers=left,float=t,stepnumber=5}
+\renewcommand{\ttdefault}{lmtt}
 \EnableCrossrefs         
 \CodelineIndex
 \RecordChanges
@@ -129,6 +130,7 @@
 % \StopEventually{}
 %
 % \subsection{Customizing the output}
+% \subsubsection{The TikZ styles}
 % This package defines three TikZ styles:
 % \begin{itemize}
 %	\item \texttt{fsnode} for generic file system nodes
@@ -137,6 +139,7 @@
 % \end{itemize}
 % They can of course be changed to give the file system nodes a custom look and feel.
 %
+% \subsubsection{Dynamic node text and shape selection}
 % To enable custom node text and dynamic shape selection,
 % the \lstinline/directoryTree/ table has two overwritable functions,
 % \lstinline/label(attr, path)/ and \lstinline/style(attr, path)/.
@@ -144,6 +147,10 @@
 % and \lstinline/path/ is the path of the file system node.
 % See listing~\ref{directory-tree.lua} on page~\pageref{directory-tree.lua} for the default implementation.
 %
+% Furthermore, there are two overwritable \TeX{} macros for typesetting node and directory labels.
+% \DescribeMacro{\dtDirLabel\marg{dirname}} Both of these macros will by default just expand to their first argument.
+% \DescribeMacro{\dtFileLabel\marg{filename}} Overwrite these to your liking,
+% for example to add a directory symbol to directory labels.
 % \section{Implementation}
 % First, we load TikZ and its library for trees, and define our node styles.
 %    \begin{macrocode}
@@ -152,6 +159,12 @@
 \tikzstyle{fsnode}=[draw=black,thick,anchor=west]
 \tikzstyle{directory}=[fsnode]
 \tikzstyle{file}=[fsnode]
+%    \end{macrocode}
+% Then we define two commands which will be called to typeset the directory and file labels.
+% Overwrite these to your liking to change the labels and their formatting.
+%    \begin{macrocode}
+\newcommand{\dtDirLabel}[1]{#1}
+\newcommand{\dtFileLabel}[1]{#1}
 %    \end{macrocode}
 % We now check if we have Lua\TeX{} before loading the Lua code powering the package.
 %    \begin{macrocode}
