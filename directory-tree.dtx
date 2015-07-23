@@ -93,13 +93,13 @@
 % shown in the directory tree. If \meta{n} is not given, the list of files will not be saved.
 %
 % \subsection{Iterating over the shown files}
-% \DescribeMacro{\dtforfiles\marg{n}\marg{i}\marg{c}}
-% |\dtforfiles| iterates over the list of files saved by |\directoryTree|.
+% \DescribeMacro{\dtForFiles\marg{n}\marg{i}\marg{c}}
+% |\dtForFiles| iterates over the list of files saved by |\directoryTree|.
 % In the process, it successively defines \meta{i} to each file name from the saved list,
 % and executes the code \meta{c}. In \meta{c}, \meta{i} is available as |\i|.
 %
 % \subsection{Excluding files and directories from the tree}
-% \DescribeMacro{\setdtexclude\marg{regex}}
+% \DescribeMacro{\dtSetExclude\marg{regex}}
 % Using this macro, you can set a Lua \meta{regex} for file exclusion.
 % Paths matching \meta{regex} will not be shown in the directory tree.
 % The default exclusion regex just excludes files and folders whose names start with a dot,
@@ -117,9 +117,9 @@
 % \label{fig:cwdtree}
 % \end{figure}
 %
-% \noindent|\dtforfiles{example}{thefile}{(\thefile)}| expands to the following:\\
+% \noindent|\dtForFiles{example}{thefile}{(\thefile)}| expands to the following:\\
 % {\itshape
-% \dtforfiles{example}{thefile}{(\thefile)}
+% \dtForFiles{example}{thefile}{(\thefile)}
 % }\\
 % It retrieves the list of files saved with the name \texttt{example} from the tree in figure~\ref{fig:cwdtree},
 % defines |\thefile| for each filename and then calls the code given as the last argument,
@@ -178,19 +178,19 @@
 }
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\dtforfiles}
+% \begin{macro}{\dtForFiles}
 %    \begin{macrocode}
 \makeatletter
-\newcommand{\dtforfiles}[3]{
+\newcommand{\dtForFiles}[3]{
 	\edef\dt@list{\csname dt@listoffiles@#1\endcsname}
 	\expandafter\expandafter\expandafter\@for\csname #2\endcsname:=\dt@list\do{#3}
 }
 \makeatother
 %    \end{macrocode}
 % \end{macro}
-% \begin{macro}{\setdtexclude}
+% \begin{macro}{\dtSetExclude}
 %    \begin{macrocode}
-\newcommand{\setdtexclude}[1]{
+\newcommand{\dtSetExclude}[1]{
 	\directlua{directoryTree.exclude = #1;}
 }
 %    \end{macrocode}
